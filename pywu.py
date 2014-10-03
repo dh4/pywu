@@ -444,7 +444,7 @@ class ForecastData:
 
         e = "Data file has not been populated. Use 'pywu -v fetch <apikey> <location>' first."
 
-        if self.verbose: print(e, file=sys.stderror)
+        if self.verbose: print(e, file=sys.stderr)
         sys.exit(1)
 
 
