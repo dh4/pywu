@@ -1,11 +1,11 @@
-# PYWU
+# pywu
 
-PYWU is a simple python script for fetching data from Weather Underground's API. You need an API key to use the script (get it [here](http://www.wunderground.com/weather/api/)).
+pywu is a simple python script for fetching data from Weather Underground's API. You need an API key to use the script (get it [here](http://www.wunderground.com/weather/api/)).
 
 
 ### Config file
 
-PYWU supports reading from a config file as well as passing your API key/location via command line. A sample configuration:
+pywu supports reading from a config file as well as passing your API key/location via command line. A sample configuration:
 
 ~/.pywu.conf:
 ```
@@ -108,4 +108,4 @@ optional arguments:
 
 ### Conky
 
-PYWU can be used with Conky. An example conkyrc is provided in the examples directory. It's recommended to have a script call `pywu fetch` before conky starts and then periodcally from within the conkyrc (the example shows every 15 minutes or 900 seconds).
+pywu can be used with Conky. An example conkyrc is provided in the examples directory. It's recommended to have a script call `pywu fetch` before conky starts and then periodcally from within the conkyrc (the example shows every 15 minutes or 900 seconds).
