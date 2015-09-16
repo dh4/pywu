@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 ###
 #
 # Copyright (c) 2014, Dan Hasting
@@ -53,7 +51,9 @@ class OptionParser:
         + "Underground's API.\n\nYou must first fetch the data using the fetch command. "
         + "This stores a file in /tmp that contains the data. All other commands (current, "
         + "forecast, and info) read from this file.\n\nFor more information, visit: "
-        + "https://www.github.com/dh4/pywu", formatter_class=RawTextHelpFormatter)
+        + "https://www.github.com/dh4/pywu\n\n"
+        + "You can also pass the -h parameter to positional arguments. For example:\n    "
+        + "pywu fetch -h", formatter_class=RawTextHelpFormatter)
 
 
     def __init__(self):
@@ -65,80 +65,15 @@ class OptionParser:
                                  default=False, help="Display additional information (use this "
                                  + "if you are expecting output but recieve none)\n\n")
 
+        # The fetch argument allows a user to fetch new information while calling current, etc.
         self.parser.add_argument("-f","--fetch", action="store", dest="fetch", metavar="<min>",
                                  type=int, default=-1, help="Requires config file. Use to fetch "
                                  + "new information before printing current/forecast condition if "
                                  + "temporary file is older than given minutes (has no effect "
                                  + "with `pywu fetch`)\n\n")
 
-
-        sub_help = "\nfetch: Pull weather data from server. Use the format "
-        sub_help += "'<API key> <city>,<state>' or simply your API key and zip code.\n\n\t"
-        sub_help += "pywu fetch <apikey> 'New York,NY'\n\t"
-        sub_help += "pywu fetch <apikey> 10001\n\n\t"
-        sub_help += "You can also specify a language (the default is English). For example:\n\t"
-        sub_help += "pywu fetch <apikey> <location> FR\n\n\t"
-        sub_help += "For a list of language codes, visit:\n\t"
-        sub_help += "http://www.wunderground.com/weather/api/d/docs?d=language-support\n\n\t"
-        sub_help += "Instead of the above, you may also use a ~/.pywu.conf file and simply "
-        sub_help += "call `pywu fetch`.\n\tFor more information, read the Github README.\n\n\n"
-
-        sub_help += "current: Display current statistics. Possible commands:\n\n\t"
-        sub_help += "pywu current condition\n\t"
-        sub_help += "pywu current temp_f\n\t"
-        sub_help += "pywu current temp_c\n\t"
-        sub_help += "pywu current humidity\n\t"
-        sub_help += "pywu current icon\n\t"
-        sub_help += "pywu current wind\n\t"
-        sub_help += "pywu current pressure_mb\n\t"
-        sub_help += "pywu current pressure_in\n\t"
-        sub_help += "pywu current dewpoint_c\n\t"
-        sub_help += "pywu current dewpoint_f\n\t"
-        sub_help += "pywu current heat_index_c\n\t"
-        sub_help += "pywu current heat_index_f\n\t"
-        sub_help += "pywu current windchill_c\n\t"
-        sub_help += "pywu current windchill_f\n\t"
-        sub_help += "pywu current feelslike_c\n\t"
-        sub_help += "pywu current feelslike_f\n\t"
-        sub_help += "pywu current visibility_mi\n\t"
-        sub_help += "pywu current visibility_km\n\t"
-        sub_help += "pywu current prec_hour_in\n\t"
-        sub_help += "pywu current prec_hour_cm\n\t"
-        sub_help += "pywu current prec_day_in\n\t"
-        sub_help += "pywu current prec_day_cm\n\n\n"
-
-        sub_help += "forecast: Display forecast statistics. Possible commands:\n\n\t"
-        sub_help += "pywu forecast day\n\t"
-        sub_help += "pywu forecast shortdate\n\t"
-        sub_help += "pywu forecast longdate\n\t"
-        sub_help += "pywu forecast low_f\n\t"
-        sub_help += "pywu forecast low_c\n\t"
-        sub_help += "pywu forecast high_f\n\t"
-        sub_help += "pywu forecast high_c\n\t"
-        sub_help += "pywu forecast icon\n\t"
-        sub_help += "pywu forecast condition\n\t"
-        sub_help += "pywu forecast rain_in\n\t"
-        sub_help += "pywu forecast rain_mm\n\t"
-        sub_help += "pywu forecast snow_in\n\t"
-        sub_help += "pywu forecast snow_cm\n\n\t"
-
-        sub_help += "-d {0,1,2,3,4,5,6,7,8,9}, --day {0,1,2,3,4,5,6,7,8,9}\n        "
-        sub_help += "Day to display forecast information from. Default is 0 (today).\n\n        "
-        sub_help += "Example: pywu forecast condition --day 1\n\n\n"
-
-        sub_help += "info: Display forecast information. Possible commands:\n\n\t"
-        sub_help += "pywu info city\n\t"
-        sub_help += "pywu info postal\n\t"
-        sub_help += "pywu info datetime\n\t"
-        sub_help += "pywu info location\n\t"
-        sub_help += "pywu info country\n\t"
-        sub_help += "pywu info latitude\n\t"
-        sub_help += "pywu info longitude\n\t"
-        sub_help += "pywu info elevation\n\t"
-        sub_help += "pywu info observation\n\t"
-
         # We are going to use sub commands to make user input look cleaner
-        subparser = self.parser.add_subparsers(dest="sub", help=sub_help)
+        subparser = self.parser.add_subparsers(dest="sub")
 
         # The fetch sub command. Used to populate the data file
         fetch_parser = subparser.add_parser("fetch")
