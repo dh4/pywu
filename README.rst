@@ -5,39 +5,23 @@ pywu is a simple python script for fetching data from Weather
 Underground's API. You need an API key to use the script (get it
 `here <http://www.wunderground.com/weather/api/>`__).
 
-Config file
------------
 
-pywu supports reading from a config file as well as passing your API
-key/location via command line. A sample configuration:
+Installation
+------------
 
-~/.pywu.conf:
-
-::
-
-    [PYWU]
-    apikey=<yourapikey>
-    location=New York City, NY
-
-Language Support
-----------------
-
-The default language for data returned from Weather Underground is
-English. You may specify a different language either on the command line
-(French for example):
-
-``pywu fetch <apikey> <location> FR``
-
-Or in the config file:
+pywu is available on `PyPI <https://pypi.python.org/pypi/pywu/>`__. You can
+install it with pip:
 
 ::
 
-    [PYWU]
-    ...
-    language=FR
+    pip3 install pywu
 
-A list of possible language codes can be found
-`here <http://www.wunderground.com/weather/api/d/docs?d=language-support>`__.
+If installing from source run:
+
+::
+
+    python3 setup.py build install
+
 
 Usage
 -----
@@ -67,8 +51,11 @@ You can also specify a language (the default is English). For example:
 
     pywu fetch <apikey> <location> FR
 
+A list of possible language codes can be found
+`here <http://www.wunderground.com/weather/api/d/docs?d=language-support>`__.
+
 Instead of the above, you may also use a ~/.pywu.conf file and simply
-call ``pywu fetch``.
+call ``pywu fetch``. See below for more information.
 
 current
 ~~~~~~~
@@ -175,6 +162,30 @@ information at the same time as you print current/forecast information:
     pywu -f <min> forecast condition -d 3
 
 pywu will fetch new information if the current information is older than <min>.
+
+
+Config file
+-----------
+
+pywu supports reading from a config file as well as passing your API
+key/location via command line. A sample configuration:
+
+~/.pywu.conf:
+
+::
+
+    [PYWU]
+    apikey=<yourapikey>
+    location=New York City, NY
+
+You can also specify a language within the config file:
+
+::
+
+    [PYWU]
+    ...
+    language=FR
+
 
 Conky
 -----

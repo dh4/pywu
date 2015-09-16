@@ -1,5 +1,0 @@
-#!/bin/sh
-
-file="/usr/share/pywu/pywu.py"
-
-exec /usr/bin/env python3 $file "$@"
