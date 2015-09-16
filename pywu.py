@@ -76,8 +76,12 @@ class OptionParser:
         sub_help += "'<API key> <city>,<state>' or simply your API key and zip code.\n\n\t"
         sub_help += "pywu fetch <apikey> 'New York,NY'\n\t"
         sub_help += "pywu fetch <apikey> 10001\n\n\t"
-        sub_help += "You may also use a ~/.pywu.conf file and simply call `pywu fetch`. "
-        sub_help += "For more information, read the Github README.\n\n\n"
+        sub_help += "You can also specify a language (the default is English). For example:\n\t"
+        sub_help += "pywu fetch <apikey> <location> FR\n\n\t"
+        sub_help += "For a list of language codes, visit:\n\t"
+        sub_help += "http://www.wunderground.com/weather/api/d/docs?d=language-support\n\n\t"
+        sub_help += "Instead of the above, you may also use a ~/.pywu.conf file and simply "
+        sub_help += "call `pywu fetch`.\n\tFor more information, read the Github README.\n\n\n"
 
         sub_help += "current: Display current statistics. Possible commands:\n\n\t"
         sub_help += "pywu current condition\n\t"
@@ -142,10 +146,12 @@ class OptionParser:
                                   help="Fetch data with given API key\n\n")
         fetch_parser.add_argument("location", action="store", metavar="<location>", nargs="?",
                                   help="Fetch data with given location\n\n")
+        fetch_parser.add_argument("language", action="store", metavar="<language>", nargs="?",
+                                  help="Fetch data in the given language\n\n")
 
         # The current sub command. Used to fetch current conditions from the data file
         current_parser = subparser.add_parser("current")
-        current_parser.add_argument("current", 
+        current_parser.add_argument("current",
             choices=["condition","temp_f","temp_c","humidity",
                      "icon","wind","pressure_mb","pressure_in","dewpoint_c","dewpoint_f",
                      "heat_index_c","heat_index_f","windchill_c","windchill_f","feelslike_c",
@@ -155,19 +161,19 @@ class OptionParser:
 
         # The forecast sub command. Used to fetch future predictions from the data file.
         forecast_parser = subparser.add_parser("forecast")
-        forecast_parser.add_argument("forecast", 
+        forecast_parser.add_argument("forecast",
             choices=["day","shortdate","longdate","low_f","low_c","high_f","high_c","icon",
-                     "condition","rain_in","rain_mm","snow_in","snow_cm"], 
+                     "condition","rain_in","rain_mm","snow_in","snow_cm"],
             action="store", help="Display forecast statistic\nSee -h for possible values.\n\n")
-        forecast_parser.add_argument("-d","--day", choices=[0,1,2,3,4,5,6,7,8,9], action="store", 
+        forecast_parser.add_argument("-d","--day", choices=[0,1,2,3,4,5,6,7,8,9], action="store",
             dest="day", default=0, type=int, help="Day to display forecast information from. "
             + "Default is 0 (today).\n\n")
 
         # The info sub command prints various information about the data feed.
         info_parser = subparser.add_parser("info")
-        info_parser.add_argument("information", 
+        info_parser.add_argument("information",
             choices=["city","postal","datetime","location","country","latitude","longitude",
-                     "elevation","observation"], 
+                     "elevation","observation"],
             action="store", help="Display forecast information\nSee -h for possible values.\n\n")
 
 
@@ -203,21 +209,34 @@ class ForecastData:
         except KeyError:
             conf = False
 
+        if conf:
+            try:
+                conf_lang = config['PYWU']['language']
+            except KeyError:
+                conf_lang = 'EN'
+
         if args.sub == "fetch":
             apikey = args.apikey
             location = args.location
+            language = args.language
+
+            if language is None:
+                language = 'EN'
 
             # If arguments not provided, use config values
             if apikey == None or location == None:
+                if self.verbose: print("API key and location not found in arguments, "
+                                 + "trying ~/.pywu.conf", file=sys.stdout)
                 if conf and conf_key != "" and conf_loc != "":
                     apikey = conf_key
                     location = conf_loc
+                    language = conf_lang
                 else:
-                    if self.verbose: print("Please provide an API key and location in .pywu.conf",
+                    if self.verbose: print("Please provide an API key and location in ~/.pywu.conf",
                                      file=sys.stderr)
                     sys.exit(4)
 
-            self.fetch_data(apikey, location)
+            self.fetch_data(apikey, location, language)
 
         # If user passed --fetch, check for config file and update cache
         elif self.args.fetch > -1 and self.args.sub != None:
@@ -226,7 +245,7 @@ class ForecastData:
 
                 if age > self.args.fetch * 60:
                     if self.verbose: print("Updating cache file", file=sys.stdout)
-                    self.fetch_data(conf_key, conf_loc)
+                    self.fetch_data(conf_key, conf_loc, conf_lang)
                 else:
                     if self.verbose: print("Cache file " + str(int(age / 60)) + " minutes old. "
                                      + "Not updating", file=sys.stdout)
@@ -242,11 +261,11 @@ class ForecastData:
         f.close()
 
 
-    def fetch_data(self, apikey, location):
+    def fetch_data(self, apikey, location, language):
 
         # Grab data from Weather Underground API
-        req = "http://api.wunderground.com/api/" + apikey + "/conditions/forecast10day/q/"
-        req += quote(location) + ".json"
+        req = ("http://api.wunderground.com/api/%s/conditions/forecast10day/lang:%s/q/%s.json"
+               % (apikey, language, quote(location)))
 
         if self.verbose: print("Fetching weather data...", file=sys.stdout)
 
