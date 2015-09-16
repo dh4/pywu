@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pywu",
-    version="1.0",
+    version="1.1",
     author="Dan Hasting",
     author_email="dan@hasting.info",
     url="https://github.com/dh4/pywu",
