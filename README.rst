@@ -22,6 +22,12 @@ If installing from source run:
 
     python3 setup.py build install
 
+You can also run the script locally if preferred. Download pywu/pywu.py to a
+directory of your choosing and run it with python:
+
+::
+
+    python3 pywu.py
 
 Usage
 -----
