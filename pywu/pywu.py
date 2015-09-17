@@ -51,9 +51,7 @@ class OptionParser:
         + "Underground's API.\n\nYou must first fetch the data using the fetch command. "
         + "This stores a file in /tmp that contains the data. All other commands (current, "
         + "forecast, and info) read from this file.\n\nFor more information, visit: "
-        + "https://www.github.com/dh4/pywu\n\n"
-        + "You can also pass the -h parameter to positional arguments. For example:\n    "
-        + "pywu fetch -h", formatter_class=RawTextHelpFormatter)
+        + "https://www.github.com/dh4/pywu", formatter_class=RawTextHelpFormatter)
 
 
     def __init__(self):
@@ -63,26 +61,28 @@ class OptionParser:
         # error output.
         self.parser.add_argument("-v","--verbose", action="store_true", dest="verbose",
                                  default=False, help="Display additional information (use this "
-                                 + "if you are expecting output but recieve none)\n\n")
+                                 + "if you are expecting output but recieve none)")
 
         # The fetch argument allows a user to fetch new information while calling current, etc.
         self.parser.add_argument("-f","--fetch", action="store", dest="fetch", metavar="<min>",
                                  type=int, default=-1, help="Requires config file. Use to fetch "
                                  + "new information before printing current/forecast condition if "
                                  + "temporary file is older than given minutes (has no effect "
-                                 + "with `pywu fetch`)\n\n")
+                                 + "with `pywu fetch`)")
 
         # We are going to use sub commands to make user input look cleaner
-        subparser = self.parser.add_subparsers(dest="sub")
+        sub_help = ("Pass the -h parameter to positional arguments to learn more about them. "
+                    "Example: `pywu fetch -h`")
+        subparser = self.parser.add_subparsers(dest="sub", help=sub_help)
 
         # The fetch sub command. Used to populate the data file
         fetch_parser = subparser.add_parser("fetch")
         fetch_parser.add_argument("apikey", action="store", metavar="<apikey>", nargs="?",
-                                  help="Fetch data with given API key\n\n")
+                                  help="Fetch data with given API key")
         fetch_parser.add_argument("location", action="store", metavar="<location>", nargs="?",
-                                  help="Fetch data with given location\n\n")
+                                  help="Fetch data with given location")
         fetch_parser.add_argument("language", action="store", metavar="<language>", nargs="?",
-                                  help="Fetch data in the given language\n\n")
+                                  help="Fetch data in the given language")
 
         # The current sub command. Used to fetch current conditions from the data file
         current_parser = subparser.add_parser("current")
@@ -92,24 +92,27 @@ class OptionParser:
                      "heat_index_c","heat_index_f","windchill_c","windchill_f","feelslike_c",
                      "feelslike_f","visibility_mi","visibility_km","prec_hour_in","prec_hour_cm",
                      "prec_day_in","prec_day_cm"],
-            action="store", help="Display current statistic\nSee -h for possible values.\n\n")
+            action="store", help="Reads current information from the data file. Example: "
+            + "`pywu current condition`")
 
         # The forecast sub command. Used to fetch future predictions from the data file.
         forecast_parser = subparser.add_parser("forecast")
         forecast_parser.add_argument("forecast",
             choices=["day","shortdate","longdate","low_f","low_c","high_f","high_c","icon",
                      "condition","rain_in","rain_mm","snow_in","snow_cm"],
-            action="store", help="Display forecast statistic\nSee -h for possible values.\n\n")
+            action="store", help="Reads forecast information from the data file. Example: "
+            + "`pywu forecast condition`. Also see the -d parameter below.")
         forecast_parser.add_argument("-d","--day", choices=[0,1,2,3,4,5,6,7,8,9], action="store",
             dest="day", default=0, type=int, help="Day to display forecast information from. "
-            + "Default is 0 (today).\n\n")
+            + "Default is 0 (today).")
 
         # The info sub command prints various information about the data feed.
         info_parser = subparser.add_parser("info")
         info_parser.add_argument("information",
             choices=["city","postal","datetime","location","country","latitude","longitude",
                      "elevation","observation"],
-            action="store", help="Display forecast information\nSee -h for possible values.\n\n")
+            action="store", help="Reads information about the forecast from the data file. "
+            + "Example: `pywu info observation`")
 
 
     def parse_args(self):
