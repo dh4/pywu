@@ -1,6 +1,9 @@
 pywu
 ====
 
+.. image:: https://img.shields.io/pypi/v/pywu.svg
+    :target: https://pypi.python.org/pypi/pywu/
+
 pywu is a simple python script for fetching data from Weather
 Underground's API. You need an API key to use the script (get it
 `here <http://www.wunderground.com/weather/api/>`__).
