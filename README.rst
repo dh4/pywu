@@ -54,6 +54,13 @@ or simply your API key and zip code.
     pywu fetch <apikey> 'New York,NY'
     pywu fetch <apikey> 10001
 
+If you want to specify a specific weather station, use the format "pws:"
+followed by the station code. For example:
+
+::
+
+    pywu fetch <apikey> pws:KNYNEWYO395
+
 You can also specify a language (the default is English). For example:
 
 ::
