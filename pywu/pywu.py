@@ -216,7 +216,7 @@ class ForecastData:
                 print("Status returned: " + str(e.code), file=sys.stderr)
             sys.exit(2)
 
-        json_data = response.read().decode()
+        json_data = response.read().decode('utf-8', 'replace')
         data = json.loads(json_data)
 
         try:
