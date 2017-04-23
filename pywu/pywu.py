@@ -87,8 +87,8 @@ class OptionParser:
         # The current sub command. Used to fetch current conditions from the data file
         current_parser = subparser.add_parser("current")
         current_parser.add_argument("current",
-            choices=["condition","temp_f","temp_c","humidity",
-                     "icon", "wind_dir", "wind_kph", "wind_mph", "wind_gust_kph", "wind_gust_mph",
+            choices=["condition","temp_f","temp_c","humidity", "icon",
+                     "wind", "wind_dir", "wind_kph", "wind_mph", "wind_gust_kph", "wind_gust_mph",
                      "wind_string_kph", "wind_string_mph", "pressure_mb", "pressure_in",
                      "dewpoint_c","dewpoint_f", "heat_index_c","heat_index_f", "windchill_c",
                      "windchill_f","feelslike_c", "feelslike_f","visibility_mi", "visibility_km",
@@ -247,9 +247,11 @@ class ForecastData:
         wind_kph = current['wind_kph']
         wind_gust_mph = current['wind_gust_mph']
         wind_gust_kph = current['wind_gust_kph']
-        wind_string_mph = wind_dir + " " + str(int(round(float(wind_mph)))) + "mph gusting to " + str(int(round(float(wind_gust_mph)))) + "mph"
-        wind_string_kph = wind_dir + " " + str(int(round(float(wind_kph)))) + "km/h gusting to " + str(int(round(float(wind_gust_kph)))) + "km/h"
-        wind_legacy = wind_dir + " " + str(int(round(float(wind_mph)))) + "mph"
+        wind_string_mph = (wind_dir + " " + str(int(round(float(wind_mph))))
+                        + "mph gusting to " + str(int(round(float(wind_gust_mph)))) + "mph")
+        wind_string_kph = (wind_dir + " " + str(int(round(float(wind_kph))))
+                        + "km/h gusting to " + str(int(round(float(wind_gust_kph)))) + "km/h")
+        wind = wind_dir + " " + str(int(round(float(wind_mph)))) + "mph"
 
         current_dict = {
             "condition"    : current['weather'],
@@ -257,7 +259,7 @@ class ForecastData:
             "temp_c"       : int(round(float(current['temp_c']))),
             "humidity"     : current['relative_humidity'],
             "icon"         : self.convert_icon(current['icon'],True),
-            "wind"           : wind_legacy,
+            "wind"           : wind,
             "wind_dir"       : wind_dir,
             "wind_mph"       : wind_mph,
             "wind_kph"       : wind_kph,
