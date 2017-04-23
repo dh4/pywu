@@ -86,6 +86,13 @@ Display current statistics. Possible commands:
     pywu current humidity
     pywu current icon
     pywu current wind
+    pywu current wind_dir
+    pywu current wind_mph
+    pywu current wind_kph
+    pywu current wind_gust_mph
+    pywu current wind_gust_kph
+    pywu current wind_string_mph
+    pywu current wind_string_kph
     pywu current pressure_mb
     pywu current pressure_in
     pywu current dewpoint_c
