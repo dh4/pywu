@@ -121,13 +121,15 @@ class OptionParser:
                 choices=["start", "expires", "description", "message"],
                 action="store", help="Reads weather alert information from the data file. "
                 + "Example: `pywu alert description`. Also see the -n parameter below.")
-        alert_parser.add_argument("-n", "--num", action="store", dest="num", default=0,
-                type=int, help="Alert number to display information from. Default is 0 "
+        alert_parser.add_argument("-n", "--num", action="store", dest="num", default=1,
+                type=int, help="Alert number to display information from. Default is 1 "
                 + "(first).")
 
 
     def parse_args(self):
         args = self.parser.parse_args()
+        if hasattr(args, "num") and args.num < 1:
+            self.parser.error("Invalid alert number: Minimum value is 1.")
         return args
 
     def print_usage(self):
@@ -466,7 +468,15 @@ class ForecastData:
             print(info_dict[self.args.information], file=sys.stdout)
         elif self.args.sub == "alert":
             alerts_dict = self.read_alerts()
-            print(alerts_dict[int(self.args.num)][self.args.alert], file=sys.stdout)
+
+            if len(alerts_dict) < 1:
+                print('No alerts to display')
+                sys.exit(10)
+
+            if self.args.num > len(alerts_dict):
+                parser.parser.error('Invalid alert number. Available: %s' % len(alerts_dict))
+
+            print(alerts_dict[int(self.args.num-1)][self.args.alert], file=sys.stdout)
         elif self.args.sub != "fetch":
             parser.print_usage()
 
