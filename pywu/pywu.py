@@ -115,9 +115,21 @@ class OptionParser:
             action="store", help="Reads information about the forecast from the data file. "
             + "Example: `pywu info observation`")
 
+        # The alert sub command.
+        alert_parser = subparser.add_parser("alert")
+        alert_parser.add_argument("alert",
+                choices=["start", "expires", "description", "message"],
+                action="store", help="Reads weather alert information from the data file. "
+                + "Example: `pywu alert description`. Also see the -n parameter below.")
+        alert_parser.add_argument("-n", "--num", action="store", dest="num", default=1,
+                type=int, help="Alert number to display information from. Default is 1 "
+                + "(first).")
+
 
     def parse_args(self):
         args = self.parser.parse_args()
+        if hasattr(args, "num") and args.num < 1:
+            self.parser.error("Invalid alert number: Minimum value is 1.")
         return args
 
     def print_usage(self):
@@ -203,7 +215,7 @@ class ForecastData:
     def fetch_data(self, apikey, location, language):
 
         # Grab data from Weather Underground API
-        req = ("http://api.wunderground.com/api/%s/conditions/forecast10day/lang:%s/q/%s.json"
+        req = ("http://api.wunderground.com/api/%s/conditions/alerts/forecast10day/lang:%s/q/%s.json"
                % (apikey, language, quote(location)))
 
         if self.verbose: print("Fetching weather data...", file=sys.stdout)
@@ -348,6 +360,29 @@ class ForecastData:
         return info_dict
 
 
+    def read_alerts(self):
+
+        alerts_dict = []
+
+        try:
+            alerts = self.data['alerts']
+        except KeyError:
+            self.fetch_error()
+
+        for index, node in enumerate(alerts):
+
+            a = {
+                "start"       : node['date'],
+                "expires"     : node['expires'],
+                "description" : node['description'],
+                "message"     : node['message'],
+            }
+
+            alerts_dict.append(a)
+
+        return alerts_dict
+
+
     def convert_icon(self, icon, current=False):
 
         pattern = re.compile(r'[A-Za-z]+ \d+ (.+):\d+:\d+')
@@ -431,6 +466,17 @@ class ForecastData:
         elif self.args.sub == "info":
             info_dict = self.read_info()
             print(info_dict[self.args.information], file=sys.stdout)
+        elif self.args.sub == "alert":
+            alerts_dict = self.read_alerts()
+
+            if len(alerts_dict) < 1:
+                print('No alerts to display')
+                sys.exit(10)
+
+            if self.args.num > len(alerts_dict):
+                parser.parser.error('Invalid alert number. Available: %s' % len(alerts_dict))
+
+            print(alerts_dict[int(self.args.num-1)][self.args.alert], file=sys.stdout)
         elif self.args.sub != "fetch":
             parser.print_usage()
 
