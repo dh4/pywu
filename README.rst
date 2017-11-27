@@ -145,6 +145,24 @@ Example:
 
     pywu forecast condition --day 1
 
+alert
+~~~~
+
+Display alert information. Possible commands:
+
+::  
+
+    pywu alert start
+    pywu alert expires
+    pywu alert description
+    pywu alert message
+    
+You can also specify a number for multiple alerts (default is 1):
+
+::
+
+    -n NUM, --num NUM
+
 info
 ~~~~
 
