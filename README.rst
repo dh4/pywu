@@ -8,6 +8,8 @@ pywu is a simple python script for fetching data from Weather
 Underground's API. You need an API key to use the script (get it
 `here <http://www.wunderground.com/weather/api/>`__).
 
+**Note:** Weather Underground has discontinued free API keys. If you already have an API key from them, pywu will continue to work with it, otherwise there is not a way to get pywu working for the time being.
+
 
 Installation
 ------------
